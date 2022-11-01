@@ -3,16 +3,33 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/Header'
 import Landing from '../components/Landing'
+import Product from '../components/Product'
 import { Tab } from "@headlessui/react";
+import { fetchCategories } from "../utils/fetchCategories";
+import { fetchProducts } from "../utils/fetchProducts";
 
-const Home = () => {
+
+
+const Home = ({categories,products}) => {
+  console.log(products[0].category._ref);
+
+  const showProducts = (cat) => {
+
+    return products.filter( (product) => products[cat].category._ref === categories[cat]._id)
+                   .map((product) => <Product product={product} key={product._id} />
+                   ); 
+                   // filter products by category
+  };
+
+
+
+  // console.log(categories);
   return (
     <div className="">
       <Head>
         <title>APPLE REDESIGN</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-     
     <Header/>
 
     {/* from 1:13:32 */}
@@ -30,6 +47,7 @@ const Home = () => {
 
       <Tab.Group>
             <Tab.List className="flex justify-center">
+              
               {categories.map((category) => (
                 <Tab
                   key={category._id}
@@ -44,13 +62,18 @@ const Home = () => {
                 >
                   {category.title}
                 </Tab>
-              ))}
+                ))} 
+
             </Tab.List>
             <Tab.Panels className="mx-auto max-w-fit pt-10 pb-24 sm:px-4">
-              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts(1)}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts(2)}</Tab.Panel>
+
+              <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel> 
               <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
+              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
+              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
+              
             </Tab.Panels>
           </Tab.Group>
 
@@ -66,7 +89,11 @@ export default Home
 
 export const getServerSideProps = async() =>{
   const categories = await fetchCategories()
+  const products = await fetchProducts()
   return {
-    props: {},
+    props: {
+      categories,
+      products
+    },
   }
 } 

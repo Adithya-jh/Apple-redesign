@@ -1,0 +1,7 @@
+// {
+//   "extends": "@sanity/eslint-config-studio"
+// }
+
+{
+  "extends": ["@babel/core", "@sanity/eslint-config-studio","@babel/preset-plugin-syntax-jsx"]
+}
