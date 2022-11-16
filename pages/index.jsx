@@ -1,53 +1,53 @@
-// import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import Header from '../components/Header'
-import Landing from '../components/Landing'
-import Product from '../components/Product'
 import { Tab } from "@headlessui/react";
+// import type { GetServerSideProps } from "next";
+import Head from "next/head";
+// import Basket from "../components/Basket";
+import Header from "../components/Header";
+import Landing from "../components/Landing";
+import Product from "../components/Product";
 import { fetchCategories } from "../utils/fetchCategories";
 import { fetchProducts } from "../utils/fetchProducts";
+// import { getSession } from "next-auth/react";
+// import type { Session } from "next-auth";
 
+// interface Props {
+//   categories: Category[];
+//   products: Product[];
+//   session: Session | null;
+// }
 
+const Home = ({ categories, products }) => {
+  console.log(products);
 
-const Home = ({categories,products}) => {
-  console.log(products[0].category._ref);
-
-  const showProducts = (cat) => {
-
-    return products.filter( (product) => products[cat].category._ref === categories[cat]._id)
-                   .map((product) => <Product product={product} key={product._id} />
-                   ); 
-                   // filter products by category
+  const showProducts = (category) => {
+    return products.filter(
+      (product) => product.category === categories[category]._id
+    );
+    // .map((product) => <Product product={product} key={product._id} />); // filter products by category
   };
 
-
-
-  // console.log(categories);
   return (
     <div className="">
       <Head>
-        <title>APPLE REDESIGN</title>
+        <title>Apple Redesign</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    <Header/>
 
-    {/* from 1:13:32 */}
+      <Header />
 
-    <main className="relative h-[200vh] bg-[#E7ECEE]">
-      <Landing/>
-    </main>
+      {/* <Basket /> */}
 
-    <section className="relative z-40 -mt-[100vh] min-h-screen bg-[#1B1B1B]">
-      <div className="space-y-10 py-16">
+      <main className="relative h-[200vh] bg-[#E7ECEE]">
+        <Landing />
+      </main>
+      <section className="relative z-40 -mt-[100vh] min-h-screen bg-[#1B1B1B]">
+        <div className="space-y-10 py-16">
+          <h1 className="text-center text-4xl font-medium tracking-wide text-white md:text-5xl">
+            New Promos
+          </h1>
 
-      <h2 className="text-center text-4xl font-medium tracking-wide text-white md:text-5xl">
-        New Promos
-      </h2>
-
-      <Tab.Group>
+          <Tab.Group>
             <Tab.List className="flex justify-center">
-              
               {categories.map((category) => (
                 <Tab
                   key={category._id}
@@ -62,38 +62,34 @@ const Home = ({categories,products}) => {
                 >
                   {category.title}
                 </Tab>
-                ))} 
-
+              ))}
             </Tab.List>
             <Tab.Panels className="mx-auto max-w-fit pt-10 pb-24 sm:px-4">
-
-              <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel> 
-              <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel>
               <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel>
-              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
-              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
-              <Tab.Panel className="tabPanel">{showProducts(0)}</Tab.Panel> 
-              
+              <Tab.Panel className="tabPanel">{showProducts(1)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(2)}</Tab.Panel>
+              <Tab.Panel className="tabPanel">{showProducts(3)}</Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
-
-
-      </div>
-    </section>
+        </div>
+      </section>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
+// Backend Code
+export const getServerSideProps = async (context) => {
+  const categories = await fetchCategories();
+  const products = await fetchProducts();
+  // const session = await getSession(context);
 
-export const getServerSideProps = async() =>{
-  const categories = await fetchCategories()
-  const products = await fetchProducts()
   return {
     props: {
       categories,
-      products
+      products,
+      // session,
     },
-  }
-} 
+  };
+};
